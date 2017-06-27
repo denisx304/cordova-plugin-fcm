@@ -14,6 +14,9 @@ import java.util.HashMap;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Felipe Echanique on 08/06/2016.
  */
@@ -35,11 +38,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // message, here is where that should be initiated. See sendNotification method below.
         Log.d(TAG, "==> MyFirebaseMessagingService onMessageReceived");
 		
-		if( remoteMessage.getNotification() != null){
-			Log.d(TAG, "\tNotification Title: " + remoteMessage.getNotification().getTitle());
-			Log.d(TAG, "\tNotification Message: " + remoteMessage.getNotification().getBody());
-		}
-		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("wasTapped", false);
 		for (String key : remoteMessage.getData().keySet()) {
@@ -49,17 +47,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 		
 		Log.d(TAG, "\tNotification Data: " + data.toString());
-        FCMPlugin.sendPushPayload( data );
-        //sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), remoteMessage.getData());
+        //FCMPlugin.sendPushPayload( data );
+        try {
+            sendNotification(remoteMessage.getData());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     // [END receive_message]
 
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody, Map<String, Object> data) {
+    private void sendNotification(Map<String, String> data) throws JSONException {
+        JSONObject dataFields = new JSONObject(data.get("data"));
+		String title = dataFields.getString("title");
+		String messageBody = dataFields.getString("body");
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		for (String key : data.keySet()) {
@@ -80,6 +84,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(dataFields.getString("tag"), 0 /* ID of notification */, notificationBuilder.build());
     }
 }

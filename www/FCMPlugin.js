@@ -25,6 +25,10 @@ FCMPlugin.prototype.onTokenRefresh = function( callback ){
 FCMPlugin.prototype.getToken = function( success, error ){
 	exec(success, error, "FCMPlugin", 'getToken', []);
 }
+// CANCEL //
+FCMPlugin.prototype.cancel = function( tag, id, success, error ){
+	exec(success, error, "FCMPlugin", 'cancel', [tag, id]);
+}
 
 // DEFAULT NOTIFICATION CALLBACK //
 FCMPlugin.prototype.onNotificationReceived = function(payload){

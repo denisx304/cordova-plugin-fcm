@@ -4,6 +4,9 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
+
+import android.app.NotificationManager;
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -90,6 +93,22 @@ public class FCMPlugin extends CordovaPlugin {
 					public void run() {
 						try{
 							FirebaseMessaging.getInstance().unsubscribeFromTopic( args.getString(0) );
+							callbackContext.success();
+						}catch(Exception e){
+							callbackContext.error(e.getMessage());
+						}
+					}
+				});
+			}
+			else if (action.equals("cancel")) {
+				cordova.getThreadPool().execute(new Runnable() {
+					public void run() {
+						try{
+                            String tag = args.getString(0);
+                            int id = args.getInt(1);
+                            NotificationManager notificationManager =
+                                    (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.cancel(tag, id);
 							callbackContext.success();
 						}catch(Exception e){
 							callbackContext.error(e.getMessage());
