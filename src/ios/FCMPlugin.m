@@ -6,6 +6,7 @@
 #import <Cordova/CDV.h>
 #import "FCMPlugin.h"
 #import "Firebase.h"
+#import <UserNotifications/UserNotifications.h>
 
 @interface FCMPlugin () {}
 @end
@@ -128,6 +129,30 @@ static FCMPlugin *fcmPluginInstance;
         [FCMPlugin.fcmPlugin notifyOfMessage:lastPush];
     }
     appInForeground = YES;
+}
+
+// CANCEL //
+- (void) cancel:(CDVInvokedUrlCommand *)command
+{
+    NSString* email = [command.arguments objectAtIndex:0];
+    NSLog(@"FCM Plugin: cancel for %@", email);
+    [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:^(NSArray *notifications) {
+        NSMutableArray *identifiers = [[NSMutableArray alloc] init];
+        
+        for(UNNotification *n in notifications) {
+            NSString *body = n.request.content.body;
+            NSRange firstBracket = [body rangeOfString:@"("];
+            NSRange lastBracket = [body rangeOfString:@")"];
+            
+            NSString *notificationEmail = [body substringWithRange:NSMakeRange(firstBracket.location + 1, lastBracket.location - firstBracket.location - 1)];
+            
+            if ([notificationEmail isEqualToString:email]) {
+                [identifiers addObject:n.request.identifier];
+            }
+        }
+        
+        [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:identifiers];
+    }];
 }
 
 @end
