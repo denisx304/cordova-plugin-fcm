@@ -20,9 +20,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Map;
 
+import de.appplant.cordova.plugin.badge.BadgeImpl;
+
 public class FCMPlugin extends CordovaPlugin {
  
 	private static final String TAG = "FCMPlugin";
+	private final BadgeImpl badgeImpl = new BadgeImpl();
 	
 	public static CordovaWebView gWebView;
 	public static String notificationCallBack = "FCMPlugin.onNotificationReceived";
@@ -109,6 +112,7 @@ public class FCMPlugin extends CordovaPlugin {
                             NotificationManager notificationManager =
                                     (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                             notificationManager.cancel(tag, id);
+							badgeImpl.setBadge(badgeImpl.getBadge(cordova.getActivity()) - 1, cordova.getActivity());
 							callbackContext.success();
 						}catch(Exception e){
 							callbackContext.error(e.getMessage());

@@ -17,12 +17,15 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.appplant.cordova.plugin.badge.BadgeImpl;
+
 /**
  * Created by Felipe Echanique on 08/06/2016.
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMPlugin";
+    private final BadgeImpl badgeImpl = new BadgeImpl();
 
     /**
      * Called when message is received.
@@ -85,5 +88,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(dataFields.getString("tag"), dataFields.getInt("notificationID") /* ID of notification */, notificationBuilder.build());
+        badgeImpl.setBadge(badgeImpl.getBadge(getApplicationContext()) + 1, getApplicationContext());
     }
 }
