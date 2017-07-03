@@ -114,7 +114,8 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
-    // Print message ID.
+    /*
+	// Print message ID.
     NSDictionary *userInfo = notification.request.content.userInfo;
     if (userInfo[kGCMMessageIDKey]) {
         NSLog(@"Message ID 1: %@", userInfo[kGCMMessageIDKey]);
@@ -129,9 +130,10 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
                                                        options:0
                                                          error:&error];
     [FCMPlugin.fcmPlugin notifyOfMessage:jsonData];
+	*/
     
     // Change this to your preferred presentation option
-    completionHandler(UNNotificationPresentationOptionNone);
+    completionHandler(UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge);
 }
 
 // Handle notification messages after display notification is tapped by the user.

@@ -155,4 +155,12 @@ static FCMPlugin *fcmPluginInstance;
     }];
 }
 
+// DECREMENT BADGE NUMBER //
+- (void) decrementBadgeNumber:(CDVInvokedUrlCommand *)command
+{
+	long number = [[command.arguments objectAtIndex:0] intValue];
+	long currentBadge = [UIApplication sharedApplication].applicationIconBadgeNumber;
+	[UIApplication sharedApplication].applicationIconBadgeNumber = MAX(currentBadge - number, 0);
+}
+
 @end
