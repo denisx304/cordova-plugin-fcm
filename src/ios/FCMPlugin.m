@@ -163,4 +163,10 @@ static FCMPlugin *fcmPluginInstance;
 	[UIApplication sharedApplication].applicationIconBadgeNumber = MAX(currentBadge - number, 0);
 }
 
+// CLEAR BADGE NUMBER //
+- (void) clearBadgeNumber:(CDVInvokedUrlCommand *)command
+{
+	[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+}
+
 @end

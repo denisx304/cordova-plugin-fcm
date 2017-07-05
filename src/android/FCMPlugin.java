@@ -103,7 +103,30 @@ public class FCMPlugin extends CordovaPlugin {
 					}
 				});
 			}
-			else if (action.equals("cancel")) {
+			else if (action.equals("decrementBadgeNumber")) {
+				cordova.getThreadPool().execute(new Runnable() {
+					public void run() {
+						try{
+                            badgeImpl.setBadge(badgeImpl.getBadge(cordova.getActivity()) - 1, cordova.getActivity());
+							callbackContext.success();
+						}catch(Exception e){
+							callbackContext.error(e.getMessage());
+						}
+					}
+				});
+			}
+			else if (action.equals("clearBadgeNumber")) {
+				cordova.getThreadPool().execute(new Runnable() {
+					public void run() {
+						try{
+                            badgeImpl.setBadge(0, cordova.getActivity());
+							callbackContext.success();
+						}catch(Exception e){
+							callbackContext.error(e.getMessage());
+						}
+					}
+				});
+			}else if (action.equals("cancel")) {
 				cordova.getThreadPool().execute(new Runnable() {
 					public void run() {
 						try{
