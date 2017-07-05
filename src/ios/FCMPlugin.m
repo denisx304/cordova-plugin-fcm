@@ -155,6 +155,12 @@ static FCMPlugin *fcmPluginInstance;
     }];
 }
 
+// CANCEL ALL //
+- (void) cancelAll:(CDVInvokedUrlCommand *)command
+{
+    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
+}
+
 // DECREMENT BADGE NUMBER //
 - (void) decrementBadgeNumber:(CDVInvokedUrlCommand *)command
 {

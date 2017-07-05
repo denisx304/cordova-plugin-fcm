@@ -143,6 +143,20 @@ public class FCMPlugin extends CordovaPlugin {
 					}
 				});
 			}
+			else if (action.equals("cancelAll")) {
+				cordova.getThreadPool().execute(new Runnable() {
+					public void run() {
+						try{
+                            NotificationManager notificationManager =
+                                    (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.cancelAll();
+							callbackContext.success();
+						}catch(Exception e){
+							callbackContext.error(e.getMessage());
+						}
+					}
+				});
+			}
 			else{
 				callbackContext.error("Method not found");
 				return false;

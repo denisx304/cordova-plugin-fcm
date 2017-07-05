@@ -29,6 +29,10 @@ FCMPlugin.prototype.getToken = function( success, error ){
 FCMPlugin.prototype.cancel = function( tag, id, success, error ){
 	exec(success, error, "FCMPlugin", 'cancel', [tag, id]);
 }
+// CANCEL ALL //
+FCMPlugin.prototype.cancelAll = function( tag, id, success, error ){
+	exec(success, error, "FCMPlugin", 'cancelAll', [tag, id]);
+}
 // DECREMENT BADGE NUMBER //
 FCMPlugin.prototype.decrementBadgeNumber = function( number, success, error ){
 	exec(success, error, "FCMPlugin", 'decrementBadgeNumber', [number]);
