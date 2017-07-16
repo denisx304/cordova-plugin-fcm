@@ -1,9 +1,11 @@
 package com.gae.scaffolder.plugin;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,12 +57,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		Log.d(TAG, "\tNotification Data: " + data.toString());
         //FCMPlugin.sendPushPayload( data );
         try {
-            sendNotification(remoteMessage.getData());
+            String typeOfNotification = remoteMessage.getData().get("type");
+            if (typeOfNotification.equals("readMessagesUpdate")) {
+                updateNotificationsAndBadgeNumber(remoteMessage.getData());
+            } else if (typeOfNotification.equals("sendMessage")) {
+                sendNotification(remoteMessage.getData());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
     // [END receive_message]
+
+    private void updateNotificationsAndBadgeNumber(Map<String, String> data) throws JSONException {
+        JSONObject dataFields = new JSONObject(data.get("data"));
+        Long partnerID = dataFields.getLong("partnerID");
+        String partnerEmail = dataFields.getString("partnerEmail");
+        int readMessagesCount = dataFields.getInt("readMessagesCount");
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(partnerEmail, partnerID.intValue());
+
+        if (readMessagesCount > 0) {
+            badgeImpl.setBadge(badgeImpl.getBadge(getApplicationContext()) - readMessagesCount, getApplicationContext());
+        }
+    }
 
     /**
      * Create and show a simple notification containing the received FCM message.
@@ -91,6 +113,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(dataFields.getString("tag"), dataFields.getInt("notificationID") /* ID of notification */, notificationBuilder.build());
-        badgeImpl.setBadge(badgeImpl.getBadge(getApplicationContext()) + 1, getApplicationContext());
+        badgeImpl.setBadge(dataFields.getInt("unreadMessagesCount"), getApplicationContext());
     }
 }

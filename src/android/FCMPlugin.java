@@ -107,7 +107,10 @@ public class FCMPlugin extends CordovaPlugin {
 				cordova.getThreadPool().execute(new Runnable() {
 					public void run() {
 						try{
-                            badgeImpl.setBadge(badgeImpl.getBadge(cordova.getActivity()) - 1, cordova.getActivity());
+                            int number = args.getInt(0);
+							int currentBadgeNumber = badgeImpl.getBadge(cordova.getActivity().getApplicationContext());
+							int newBadgeNumber = currentBadgeNumber - number;
+                            badgeImpl.setBadge(newBadgeNumber, cordova.getActivity().getApplicationContext());
 							callbackContext.success();
 						}catch(Exception e){
 							callbackContext.error(e.getMessage());
@@ -119,7 +122,7 @@ public class FCMPlugin extends CordovaPlugin {
 				cordova.getThreadPool().execute(new Runnable() {
 					public void run() {
 						try{
-                            badgeImpl.setBadge(0, cordova.getActivity());
+                            badgeImpl.setBadge(0, cordova.getActivity().getApplicationContext());
 							callbackContext.success();
 						}catch(Exception e){
 							callbackContext.error(e.getMessage());
@@ -135,7 +138,7 @@ public class FCMPlugin extends CordovaPlugin {
                             NotificationManager notificationManager =
                                     (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                             notificationManager.cancel(tag, id);
-							badgeImpl.setBadge(badgeImpl.getBadge(cordova.getActivity()) - 1, cordova.getActivity());
+                            // badgeImpl.setBadge(badgeImpl.getBadge(cordova.getActivity()) - 1, cordova.getActivity().getApplicationContext());
 							callbackContext.success();
 						}catch(Exception e){
 							callbackContext.error(e.getMessage());
