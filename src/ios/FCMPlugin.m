@@ -140,11 +140,8 @@ static FCMPlugin *fcmPluginInstance;
         NSMutableArray *identifiers = [[NSMutableArray alloc] init];
         
         for(UNNotification *n in notifications) {
-            NSString *body = n.request.content.body;
-            NSRange firstBracket = [body rangeOfString:@"("];
-            NSRange lastBracket = [body rangeOfString:@")"];
             
-            NSString *notificationEmail = [body substringWithRange:NSMakeRange(firstBracket.location + 1, lastBracket.location - firstBracket.location - 1)];
+            NSString *notificationEmail = n.request.content.categoryIdentifier;
             
             if ([notificationEmail isEqualToString:email]) {
                 [identifiers addObject:n.request.identifier];
