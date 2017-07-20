@@ -60,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String typeOfNotification = remoteMessage.getData().get("type");
             if (typeOfNotification.equals("readMessagesUpdate")) {
                 updateNotificationsAndBadgeNumber(remoteMessage.getData());
-            } else if (typeOfNotification.equals("sendMessage")) {
+            } else if (typeOfNotification.equals("sendMessage") || typeOfNotification.equals("proactiveSearchNotification")) {
                 sendNotification(remoteMessage.getData());
             }
         } catch (JSONException e) {
@@ -113,6 +113,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(dataFields.getString("tag"), dataFields.getInt("notificationID") /* ID of notification */, notificationBuilder.build());
-        badgeImpl.setBadge(dataFields.getInt("unreadMessagesCount"), getApplicationContext());
+        if (null != data.get("unreadMessagesCount")) {
+            badgeImpl.setBadge(dataFields.getInt("unreadMessagesCount"), getApplicationContext());
+        }
     }
 }
