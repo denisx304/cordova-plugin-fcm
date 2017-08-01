@@ -5,8 +5,15 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
 
+import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -18,14 +25,17 @@ import android.os.Bundle;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import de.appplant.cordova.plugin.badge.BadgeImpl;
+import ro.atlas.app.R;
 
 public class FCMPlugin extends CordovaPlugin {
  
 	private static final String TAG = "FCMPlugin";
-	private final BadgeImpl badgeImpl = new BadgeImpl();
+	private static final BadgeImpl badgeImpl = new BadgeImpl();
 	
 	public static CordovaWebView gWebView;
 	public static String notificationCallBack = "FCMPlugin.onNotificationReceived";
@@ -160,6 +170,27 @@ public class FCMPlugin extends CordovaPlugin {
 					}
 				});
 			}
+			else if (action.equals("addNotification")) {
+                cordova.getThreadPool().execute(new Runnable() {
+                    public void run() {
+                        try{
+                            JSONObject notification = args.getJSONObject(0);
+
+                            Map<String, String> mappedNotification = new HashMap<String, String>();
+                            Iterator<?> keys = notification.keys();
+                            while (keys.hasNext()) {
+                                String key = (String) keys.next();
+                                mappedNotification.put(key, notification.get(key).toString());
+                            }
+
+                            NotificationImpl.sendNotification(mappedNotification, cordova.getActivity().getApplicationContext());
+                            callbackContext.success();
+                        }catch(Exception e){
+                            callbackContext.error(e.getMessage());
+                        }
+                    }
+                });
+            }
 			else{
 				callbackContext.error("Method not found");
 				return false;
@@ -183,7 +214,7 @@ public class FCMPlugin extends CordovaPlugin {
         //});
 		return true;
 	}
-	
+
 	public static void sendPushPayload(Map<String, Object> payload) {
 		Log.d(TAG, "==> FCMPlugin sendPushPayload");
 		Log.d(TAG, "\tnotificationCallBackReady: " + notificationCallBackReady);
@@ -217,8 +248,8 @@ public class FCMPlugin extends CordovaPlugin {
 			Log.d(TAG, "\tERROR sendRefreshToken: " + e.getMessage());
 		}
 	}
-  
-  @Override
+
+    @Override
 	public void onDestroy() {
 		gWebView = null;
 		notificationCallBackReady = false;

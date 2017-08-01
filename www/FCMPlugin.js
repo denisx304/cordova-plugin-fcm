@@ -41,6 +41,10 @@ FCMPlugin.prototype.decrementBadgeNumber = function( number, success, error ){
 FCMPlugin.prototype.clearBadgeNumber = function( success, error ){
 	exec(success, error, "FCMPlugin", 'clearBadgeNumber');
 }
+// ADD LOCAL NOTIFICATION //
+FCMPlugin.prototype.addNotification = function( notification, success, error ){
+	exec(success, error, "FCMPlugin", 'addNotification', [notification]);
+}
 
 // DEFAULT NOTIFICATION CALLBACK //
 FCMPlugin.prototype.onNotificationReceived = function(payload){
