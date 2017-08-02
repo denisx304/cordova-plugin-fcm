@@ -56,7 +56,7 @@ public class NotificationImpl {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(dataFields.getString("tag"), dataFields.getInt("notificationID") /* ID of notification */, notificationBuilder.build());
-        if (null != data.get("unreadMessagesCount")) {
+        if (null != dataFields.get("unreadMessagesCount")) {
             badgeImpl.setBadge(dataFields.getInt("unreadMessagesCount"), context);
         }
     }
