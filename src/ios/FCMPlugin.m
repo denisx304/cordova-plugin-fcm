@@ -140,9 +140,7 @@ static FCMPlugin *fcmPluginInstance;
         NSMutableArray *identifiers = [[NSMutableArray alloc] init];
         
         for(UNNotification *n in notifications) {
-            
             NSString *notificationEmail = n.request.content.categoryIdentifier;
-            
             if ([notificationEmail isEqualToString:email]) {
                 [identifiers addObject:n.request.identifier];
             }
@@ -170,6 +168,88 @@ static FCMPlugin *fcmPluginInstance;
 - (void) clearBadgeNumber:(CDVInvokedUrlCommand *)command
 {
 	[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+}
+
+// ADD LOCAL NOTIFICATION //
+- (void) addNotification:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary* payload = [command.arguments objectAtIndex:0];
+    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+    NSDictionary* data = [payload valueForKey:@"data"];
+    content.title = [data valueForKey:@"title"];
+    content.body = [data valueForKey:@"body"];
+    content.sound = [UNNotificationSound defaultSound];
+    content.categoryIdentifier = [data valueForKey:@"from"];
+    content.badge = [data valueForKey:@"unreadMessagesCount"];
+    content.userInfo = payload;
+    
+    NSString *identifier = [self getUniqueIdentifier];
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger: nil];
+    
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Error in adding local notification: %@",error);
+        }
+    }];
+}
+
+- (BOOL) isUniqueIdentifier:(NSString *)identifier
+{
+    __block BOOL response = YES;
+    [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:^(NSArray *notifications) {
+        for(UNNotification *n in notifications) {
+            if ([n.request.identifier isEqualToString:identifier]) {
+                response = NO;
+            }
+        }
+    }];
+    return response;
+}
+
+- (NSString*) getIdentifier
+{
+    NSString *possibleChars = @"0123456789ABCDEF";
+    NSMutableString *strResult = [NSMutableString string];
+    
+    for (int i = 0; i < 8; i ++) {
+        char randomChar = [possibleChars characterAtIndex:arc4random_uniform([possibleChars length])];
+        [strResult appendFormat:@"%c", randomChar];
+    }
+    [strResult appendFormat:@"%c", '-'];
+    
+    for (int i = 0; i < 4; i ++) {
+        char randomChar = [possibleChars characterAtIndex:arc4random_uniform([possibleChars length])];
+        [strResult appendFormat:@"%c", randomChar];
+    }
+    [strResult appendFormat:@"%c", '-'];
+    
+    for (int i = 0; i < 4; i ++) {
+        char randomChar = [possibleChars characterAtIndex:arc4random_uniform([possibleChars length])];
+        [strResult appendFormat:@"%c", randomChar];
+    }
+    [strResult appendFormat:@"%c", '-'];
+    
+    for (int i = 0; i < 4; i ++) {
+        char randomChar = [possibleChars characterAtIndex:arc4random_uniform([possibleChars length])];
+        [strResult appendFormat:@"%c", randomChar];
+    }
+    [strResult appendFormat:@"%c", '-'];
+    
+    for (int i = 0; i < 12; i ++) {
+        char randomChar = [possibleChars characterAtIndex:arc4random_uniform([possibleChars length])];
+        [strResult appendFormat:@"%c", randomChar];
+    }
+    
+    return strResult;
+}
+
+- (NSString*) getUniqueIdentifier
+{
+    NSString* identifier = [self getIdentifier];
+    while (![self isUniqueIdentifier:identifier]) {
+        identifier = [self getIdentifier];
+    }
+    return [self getIdentifier];
 }
 
 @end

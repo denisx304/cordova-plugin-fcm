@@ -16,5 +16,13 @@
 - (void)notifyOfTokenRefresh:(NSString*) token;
 - (void)appEnterBackground;
 - (void)appEnterForeground;
+- (void)cancel:(CDVInvokedUrlCommand*)command;
+- (void)cancelAll:(CDVInvokedUrlCommand*)command;
+- (void)decrementBadgeNumber:(CDVInvokedUrlCommand*)command;
+- (void)clearBadgeNumber:(CDVInvokedUrlCommand*)command;
+- (void)addNotification:(CDVInvokedUrlCommand*)command;
+- (BOOL)isUniqueIdentifier:(NSString*)identifier;
+- (NSString*)getIdentifier;
+- (NSString*)getUniqueIdentifier;
 
 @end
