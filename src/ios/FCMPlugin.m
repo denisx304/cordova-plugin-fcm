@@ -156,6 +156,13 @@ static FCMPlugin *fcmPluginInstance;
     [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
 }
 
+// SET BADGE NUMBER //
+- (void) setBadgeNumber:(CDVInvokedUrlCommand *)command
+{
+	long number = [[command.arguments objectAtIndex:0] intValue];
+	[UIApplication sharedApplication].applicationIconBadgeNumber = MAX(number, 0);
+}
+
 // DECREMENT BADGE NUMBER //
 - (void) decrementBadgeNumber:(CDVInvokedUrlCommand *)command
 {

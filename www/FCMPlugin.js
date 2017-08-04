@@ -33,6 +33,10 @@ FCMPlugin.prototype.cancel = function( tag, id, success, error ){
 FCMPlugin.prototype.cancelAll = function( tag, id, success, error ){
 	exec(success, error, "FCMPlugin", 'cancelAll', [tag, id]);
 }
+// SET BADGE NUMBER //
+FCMPlugin.prototype.setBadgeNumber = function( number, success, error ){
+	exec(success, error, "FCMPlugin", 'setBadgeNumber', [number]);
+}
 // DECREMENT BADGE NUMBER //
 FCMPlugin.prototype.decrementBadgeNumber = function( number, success, error ){
 	exec(success, error, "FCMPlugin", 'decrementBadgeNumber', [number]);
