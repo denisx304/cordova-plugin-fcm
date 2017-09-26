@@ -2,7 +2,6 @@
 'use strict';
 
 var fs = require('fs');
-var fsExtra = require('fs-extra')
 
 var getValue = function(config, name) {
     var value = config.match(new RegExp('<' + name + '>(.*?)</' + name + '>', "i"))
@@ -39,7 +38,7 @@ if (directoryExists("platforms/ios")) {
 
     if (fileExists( path )) {
       try {
-		fsExtra.copySync(path, "platforms/ios/" + name + "/Resources/GoogleService-Info.plist", { overwrite: true });		
+		fs.createReadStream(path).pipe(fs.createWriteStream("platforms/ios/" + name + "/Resources/GoogleService-Info.plist"));
       } catch(err) {
         process.stdout.write(err);
       }
