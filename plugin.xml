@@ -84,6 +84,13 @@
             </feature>
         </config-file>
 		
+		<!-- ENABLE REMOTE NOTIFICATIONS -->
+		<config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+				<string>remote-notification</string>
+			</array>
+		</config-file>
+		
 		<!-- ENABLE PUSH CAPABILITY -->
 		<config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
 		    <string>development</string>
