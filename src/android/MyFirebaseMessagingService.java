@@ -60,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String typeOfNotification = remoteMessage.getData().get("type");
             if (typeOfNotification.equals("readMessagesUpdate")) {
                 NotificationImpl.updateNotificationsAndBadgeNumber(remoteMessage.getData(), getApplicationContext());
-            } else if (typeOfNotification.equals("sendMessage") || typeOfNotification.equals("proactiveSearchNotification")) {
+            } else {
                 NotificationImpl.sendNotification(remoteMessage.getData(), getApplicationContext());
             }
         } catch (JSONException e) {
