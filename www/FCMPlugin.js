@@ -49,6 +49,10 @@ FCMPlugin.prototype.clearBadgeNumber = function( success, error ){
 FCMPlugin.prototype.addNotification = function( notification, success, error ){
 	exec(success, error, "FCMPlugin", 'addNotification', [notification]);
 }
+// CHECK IF USER ALLOWED NOTIFICATIONS //
+FCMPlugin.prototype.checkIfUserAllowedNotifications = function(success, error ){
+	exec(success, error, "FCMPlugin", 'checkIfUserAllowedNotifications');
+}
 
 // DEFAULT NOTIFICATION CALLBACK //
 FCMPlugin.prototype.onNotificationReceived = function(payload){

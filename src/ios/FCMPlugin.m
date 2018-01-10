@@ -200,6 +200,14 @@ static FCMPlugin *fcmPluginInstance;
     }];
 }
 
+// CHECK IF USER ALLOWED NOTIFICATIONS //
+- (void) checkIfUserAllowedNotifications:(CDVInvokedUrlCommand *)command
+{
+	CDVPluginResult* pluginResult = nil;
+	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[UIApplication sharedApplication].registeredForRemoteNotifications];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (BOOL) isUniqueIdentifier:(NSString *)identifier
 {
     __block BOOL response = YES;

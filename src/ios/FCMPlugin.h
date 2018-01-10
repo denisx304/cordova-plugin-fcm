@@ -22,6 +22,7 @@
 - (void)decrementBadgeNumber:(CDVInvokedUrlCommand*)command;
 - (void)clearBadgeNumber:(CDVInvokedUrlCommand*)command;
 - (void)addNotification:(CDVInvokedUrlCommand*)command;
+- (void)checkIfUserAllowedNotifications:(CDVInvokedUrlCommand*)command;
 - (BOOL)isUniqueIdentifier:(NSString*)identifier;
 - (NSString*)getIdentifier;
 - (NSString*)getUniqueIdentifier;
