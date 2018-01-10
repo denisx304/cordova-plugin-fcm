@@ -203,9 +203,15 @@ static FCMPlugin *fcmPluginInstance;
 // CHECK IF USER ALLOWED NOTIFICATIONS //
 - (void) checkIfUserAllowedNotifications:(CDVInvokedUrlCommand *)command
 {
-	CDVPluginResult* pluginResult = nil;
-	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[UIApplication sharedApplication].registeredForRemoteNotifications];
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+	[[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+        BOOL userAllowedNotitications = YES;
+        if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
+            userAllowedNotitications = NO;
+        }
+        CDVPluginResult* pluginResult = nil;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:userAllowedNotitications];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
 }
 
 - (BOOL) isUniqueIdentifier:(NSString *)identifier
